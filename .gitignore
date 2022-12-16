@@ -15,7 +15,7 @@ wandb/
 *.csv
 
 # pt
-# *.pt
+*.pt
 
 # bash
 *.sh
@@ -26,8 +26,8 @@ wandb/
 # folders
 weight/
 asset/
-# output/
-catboost_info/
+output/
+submission/
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks

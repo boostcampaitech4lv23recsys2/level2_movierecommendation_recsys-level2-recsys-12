@@ -15,6 +15,9 @@ from utils import (
     get_user_seqs,
     set_seed,
 )
+import warnings
+warnings.filterwarnings(action="ignore")
+
 
 
 def main():
@@ -68,8 +71,16 @@ def main():
     parser.add_argument("--gpu_id", type=str, default="0", help="gpu_id")
 
     parser.add_argument("--using_pretrain", action="store_true")
+    parser.add_argument("--wandb", default="NO_USE", type=str, help="option for running wandb")
 
     args = parser.parse_args()
+
+    if args.wandb != "NO_USE":
+        import wandb
+        wandb.login()
+        wandb.init(project=args.wandb, entity="movie-recsys-12")
+        wandb.run.name = f"bs:{args.batch_size}_lr:{args.lr}"
+        wandb.config = vars(args)
 
     set_seed(args.seed)
     check_path(args.output_dir)
@@ -144,6 +155,14 @@ def main():
         trainer.train(epoch)
 
         scores, _ = trainer.valid(epoch)
+        wandb.log(
+            {
+                "RECALL@5": scores[0],
+                "NDCG@5": scores[1],
+                "RECALL@10": scores[2],
+                "NDCG@10": scores[3],
+            }
+        )
 
         early_stopping(np.array(scores[-1:]), trainer.model)
         if early_stopping.early_stop:
@@ -156,6 +175,9 @@ def main():
     trainer.model.load_state_dict(torch.load(args.checkpoint_path))
     scores, result_info = trainer.test(0)
     print(result_info)
+
+    if args.wandb != "NO_USE":
+        wandb.finish()
 
 
 if __name__ == "__main__":
