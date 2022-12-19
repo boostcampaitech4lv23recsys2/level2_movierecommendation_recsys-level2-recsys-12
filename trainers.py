@@ -4,7 +4,7 @@ import torch.nn as nn
 import tqdm
 from torch.optim import Adam
 
-from utils import ndcg_k, recall_at_k
+from utils import ndcg_k, recall_at_k, LrScheduler
 
 
 class Trainer:
@@ -40,6 +40,7 @@ class Trainer:
             betas=betas,
             weight_decay=self.args.weight_decay,
         )
+        self.scheduler = LrScheduler(self.optim, args=args).scheduler
 
         print("Total Parameters:", sum([p.nelement() for p in self.model.parameters()]))
         self.criterion = nn.BCELoss()
@@ -250,6 +251,9 @@ class FinetuneTrainer(Trainer):
 
                 rec_avg_loss += loss.item()
                 rec_cur_loss = loss.item()
+
+            # scheduler.step
+            self.scheduler.step()
 
             post_fix = {
                 "epoch": epoch,
