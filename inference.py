@@ -66,6 +66,7 @@ def main():
         "--adam_beta2", type=float, default=0.999, help="adam second beta value"
     )
     parser.add_argument("--gpu_id", type=str, default="0", help="gpu_id")
+    parser.add_argument("--scheduler", type=str, default="None", help="You don`t need to handle this option.")
 
     args = parser.parse_args()
 

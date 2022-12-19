@@ -72,6 +72,28 @@ def main():
 
     parser.add_argument("--using_pretrain", action="store_true")
     parser.add_argument("--wandb", default="NO_USE", type=str, help="option for running wandb")
+    
+    # LR Scheduler
+    parser.add_argument("--scheduler", type=str, default="None", help="Choice LR-Scheduler")
+
+    parser.add_argument("--lr_gamma", type=float, default=0.5, help="scheduler lr gamma")
+
+    parser.add_argument("--lr_step_size", type=int, default=20, help="scheduler lr step_size")
+    parser.add_argument("--lr_step_size_up", type=int, default=10, help="scheduler lr step_size_up")
+    parser.add_argument("--lr_step_size_down", type=int, default=20, help="scheduler lr step_size_down")
+
+    parser.add_argument("--lr_milestones", nargs='+', type=int, default=[30,60,90], help="scheduler lr milestones")
+    parser.add_argument("--lr_base_lr", type=float, default=0.001, help="scheduler lr base_lr")
+    parser.add_argument("--lr_max_lr", type=float, default=0.1, help="scheduler lr max_lr")
+    parser.add_argument("--lr_mode", type=str, default="triangular", help="scheduler lr mode")
+
+    parser.add_argument("--lr_T_0", type=int, default=30, help="scheduler lr T_0")
+    parser.add_argument("--lr_T_mult", type=int, default=2, help="scheduler lr T_mult")
+    parser.add_argument("--lr_T_max", type=float, default=0.001, help="scheduler lr T_max")
+    parser.add_argument("--lr_T_up", type=int, default=5, help="scheduler lr T_up")
+
+    parser.add_argument("--lr_eta_min", type=float, default=0.001, help="scheduler lr eta_min")
+    parser.add_argument("--lr_eta_max", type=float, default=0.01, help="scheduler lr eta_max")
 
     args = parser.parse_args()
 
@@ -155,15 +177,16 @@ def main():
         trainer.train(epoch)
 
         scores, _ = trainer.valid(epoch)
-        wandb.log(
-            {
-                "RECALL@5": scores[0],
-                "NDCG@5": scores[1],
-                "RECALL@10": scores[2],
-                "NDCG@10": scores[3],
-            }
-        )
-
+        if args.wandb != "NO_USE":
+            wandb.log(
+                {
+                    "RECALL@5": scores[0],
+                    "NDCG@5": scores[1],
+                    "RECALL@10": scores[2],
+                    "NDCG@10": scores[3],
+                    "Lr_rate": trainer.scheduler.optimizer.param_groups[0]['lr'],
+                }
+            )
         early_stopping(np.array(scores[-1:]), trainer.model)
         if early_stopping.early_stop:
             print("Early stopping")
