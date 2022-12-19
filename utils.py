@@ -422,25 +422,25 @@ class LrScheduler:
                 optimizer, 
                 step_size=args.lr_step_size, 
                 gamma=args.lr_gamma)
-        if args.scheduler == "LambdaLR":
+        elif args.scheduler == "LambdaLR":
             self.scheduler = torch.optim.lr_scheduler.LambdaLR(
                 optimizer, 
                 lr_lambda = lambda epoch: args.lr_step_size ** epoch)
-        if args.scheduler == "MultiStepLR":
+        elif args.scheduler == "MultiStepLR":
             self.scheduler = torch.optim.lr_scheduler.MultiStepLR(
                 optimizer, 
                 milestones=args.lr_milestones, 
                 gamma=args.lr_gamma)
-        if args.scheduler == "ExponentialLR":
+        elif args.scheduler == "ExponentialLR":
             self.scheduler = torch.optim.lr_scheduler.ExponentialLR(
                 optimizer, 
                 gamma=args.lr_gamma)
-        if args.scheduler == "CosineAnnealingLR":
+        elif args.scheduler == "CosineAnnealingLR":
             self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
                 optimizer, 
                 T_max=args.lr_T_max,
                 eta_min=args.lr_eta_min)
-        if args.scheduler == "CyclicLR":
+        elif args.scheduler == "CyclicLR":
             self.scheduler = torch.optim.lr_scheduler.CyclicLR(
                 optimizer, 
                 base_lr=args.lr_base_lr, 
@@ -448,7 +448,7 @@ class LrScheduler:
                 step_size_up=args.lr_step_size_up, 
                 step_size_down=args.lr_step_size_down, 
                 mode=args.lr_mode)
-        if args.scheduler == "CosineAnnealingWarmUpRestarts":
+        elif args.scheduler == "CosineAnnealingWarmUpRestarts":
             self.scheduler = CosineAnnealingWarmUpRestarts(
                 optimizer, 
                 T_0=args.lr_T_0, 
@@ -456,5 +456,5 @@ class LrScheduler:
                 eta_max=args.lr_eta_max, 
                 T_up=args.lr_T_up, 
                 gamma=args.lr_gamma)
-        if args.scheduler == "None":
+        elif args.scheduler == "None":
             self.scheduler = Dummy_scheduler(optimizer)
