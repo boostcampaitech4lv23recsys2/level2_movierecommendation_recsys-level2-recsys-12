@@ -1,0 +1,4 @@
+lambda1 choice [5]
+lambda2 choice [5 , 50 , 1000 , 5000]
+alpha choice [0.25 , 0.5 , 0.75]
+rho choice [5000, 10000, 15000]
