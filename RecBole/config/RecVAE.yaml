@@ -1,0 +1,61 @@
+# Environment Settings
+gpu_id: 0
+use_gpu: True
+seed: 2020
+state: 'INFO'
+encoding: 'utf-8'
+reproducibility: True
+data_path: data
+checkpoint_dir: 'model/'
+show_progress: True
+save_dataset: False
+dataset_save_path: None
+save_dataloaders: False
+dataloaders_save_path: None
+log_wandb: True
+wandb_project: 'RecBole_RecVAE'
+
+# Data Settings
+USER_ID_FIELD: user_id
+ITEM_ID_FIELD: item_id
+TIME_FIELD: timestamp
+
+rm_dup_inter: False
+user_inter_num_interval: "[0, inf)"
+item_inter_num_interval: "[0, inf)"
+
+# Training Settings_basic
+epochs: 1000
+train_batch_size: 128
+learner: 'adam'
+learning_rate: 0.001
+neg_sampling: None # MultiVAE is a non-sampling model
+eval_step: 1
+stopping_step: 10
+loss_decimal_place: 4
+weight_decay: 0.000
+
+# Model settings
+hidden_dimension: 600
+latent_dimension: 128
+dropout_prob: 0.5
+beta: 0.2
+gamma: 0.005
+mixture_weights: [0.75, 0.15, 0.1]
+n_enc_epochs: 3
+n_dec_epochs: 1
+
+#Evaluation Settings
+eval_args:
+    split: {"LS": 'test_only'}
+    group_by: user
+    order: RO
+    mode: full
+repeatable: False
+metrics: ['Recall', 'MRR', 'NDCG', 'Hit', 'Precision']
+topk: 10
+valid_metric: Recall@10
+eval_batch_size: 4096
+metric_decimal_place: 4
+
+load_col: {"inter": ["user_id", "item_id", "timestamp"], "item": ["item_id", "year", "genre", "writer", "director"]}

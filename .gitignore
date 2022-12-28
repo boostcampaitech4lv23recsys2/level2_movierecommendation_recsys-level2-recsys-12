@@ -16,6 +16,7 @@ wandb/
 
 # pt
 *.pt
+*.pth
 
 # bash
 *.sh
@@ -28,6 +29,12 @@ weight/
 asset/
 output/
 submission/
+
+# RecBole
+log/
+log_tensorboard/
+*.inter
+*.item
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
