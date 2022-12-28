@@ -9,7 +9,7 @@ from recbole.trainer.trainer import RecVAETrainer
 from recbole.utils import get_model, init_logger, init_seed
 
 if __name__ == "__main__":
-    
+
     # set args
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--config_files", type=str, default=None, help="config files")
     args = parser.parse_args()
-    
+
     # set config
     args.config_files = os.path.join("./config", args.config_files)
     config = Config(

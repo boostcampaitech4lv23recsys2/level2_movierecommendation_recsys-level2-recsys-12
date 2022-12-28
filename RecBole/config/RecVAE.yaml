@@ -36,8 +36,8 @@ loss_decimal_place: 4
 weight_decay: 0.000
 
 # Model settings
-hidden_dimension: 512 # 600(512)
-latent_dimension: 256 # 128
+hidden_dimension: 600
+latent_dimension: 128
 dropout_prob: 0.5
 beta: 0.2
 gamma: 0.005

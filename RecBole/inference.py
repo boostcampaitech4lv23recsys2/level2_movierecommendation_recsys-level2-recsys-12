@@ -20,7 +20,7 @@ from utils import *
 model_type_list = ["sequential", "general", "context_aware", "knowledge_aware", "exlib"]
 
 if __name__ == "__main__":
-    
+
     # set args
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     config = Config(
         model=model_name, dataset=args.dataset, config_file_list=[args.config_files]
     )
-    
+
     # load dataset
     dataset = create_dataset(config)
 

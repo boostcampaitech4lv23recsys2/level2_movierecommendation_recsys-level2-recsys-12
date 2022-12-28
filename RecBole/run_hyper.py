@@ -6,7 +6,7 @@ from recbole.trainer import HyperTuning
 
 
 def main():
-    
+
     # set args
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -21,11 +21,11 @@ def main():
     # get input
     args.config_files = os.path.join("./config", args.config_files)
     args.params_file = os.path.join("./hyper", args.params_file)
-    
+
     # plz set algo='exhaustive' to use exhaustive search, in this case, max_evals is auto set
     hp = HyperTuning(
         objective_function,
-        algo="bayes", # random, exhaustive
+        algo="bayes",  # random, exhaustive
         # early_stop=10,
         # max_evals=100,
         params_file=args.params_file,
