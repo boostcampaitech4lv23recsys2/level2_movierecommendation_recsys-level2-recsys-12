@@ -1,41 +1,41 @@
 # RecBole
 
-RecVAE ¸ğµ¨À» »ç¿ëÇÏ±â À§ÇÏ¿© RecBoleÀ» ±¸ÇöÇÏ¿´À¸¸ç, ÃßÈÄ ´Ù¸¥ ¸ğµ¨·Î »ç¿ë ¹üÀ§¸¦ ³ĞÈú ¼ö ÀÖ½À´Ï´Ù.  
+RecVAE ëª¨ë¸ì„ ì‚¬ìš©í•˜ê¸° ìœ„í•˜ì—¬ RecBoleì„ êµ¬í˜„í•˜ì˜€ìœ¼ë©°, ì¶”í›„ ë‹¤ë¥¸ ëª¨ë¸ë¡œ ì‚¬ìš© ë²”ìœ„ë¥¼ ë„“í ìˆ˜ ìˆìŠµë‹ˆë‹¤.  
 
 # Directory Structure
 
-config - ¸ğµ¨ º° config ÆÄÀÏÀ» ÀúÀåÇÕ´Ï´Ù. ÆÄÀÏÀÇ È®ÀåÀÚ´Â .yaml ÀÔ´Ï´Ù.  
-data - RecBole¿¡¼­ »ç¿ëÇÏ´Â data Æú´õÀÔ´Ï´Ù. ÇÏÀ§¿¡ movie Æú´õ°¡ ÀÖÀ¸¸ç, ÀÌ°÷¿¡ µ¥ÀÌÅÍ°¡ ÀúÀåµË´Ï´Ù.  
-hyper - hyper parameters tuning¿¡ »ç¿ëµÇ´Â .hyper ÆÄÀÏÀ» ÀúÀåÇÕ´Ï´Ù.  
-model - ÇĞ½ÀµÈ ¸ğµ¨ÀÌ ÀúÀåµË´Ï´Ù.  
+config - ëª¨ë¸ ë³„ config íŒŒì¼ì„ ì €ì¥í•©ë‹ˆë‹¤. íŒŒì¼ì˜ í™•ì¥ìëŠ” .yaml ì…ë‹ˆë‹¤.  
+data - RecBoleì—ì„œ ì‚¬ìš©í•˜ëŠ” data í´ë”ì…ë‹ˆë‹¤. í•˜ìœ„ì— movie í´ë”ê°€ ìˆìœ¼ë©°, ì´ê³³ì— ë°ì´í„°ê°€ ì €ì¥ë©ë‹ˆë‹¤.  
+hyper - hyper parameters tuningì— ì‚¬ìš©ë˜ëŠ” .hyper íŒŒì¼ì„ ì €ì¥í•©ë‹ˆë‹¤.  
+model - í•™ìŠµëœ ëª¨ë¸ì´ ì €ì¥ë©ë‹ˆë‹¤.  
 
 # Files
 
-data_creator.py - submission¿¡ ÇÊ¿äÇÑ unique_user.csv ÆÄÀÏ°ú RecBole¿¡ »ç¿ëµÇ´Â Atomic Files (ex. .inter, .item, .user ...)¸¦ »ı¼ºÇÕ´Ï´Ù.  
-inference.py - Movie Recommendation ´ëÈ¸¿¡ ¸Âµµ·Ï ¸ğµ¨À» inferenceÇÏ¸ç, submission.csv ÆÄÀÏÀ» »ı¼ºÇÕ´Ï´Ù.  
-requirements.txt - ```pip install -r requirements.txt``` ¸í·É¾î¸¦ ÅëÇØ ¼³Ä¡ÇÒ ¼ö ÀÖ½À´Ï´Ù.  
-run_hyper.py - hyper parameter tuningÀ» ÇÏ´Â ÆÄÀÏÀÔ´Ï´Ù.  
-train.py - ¸ğµ¨ ÇĞ½ÀÀ» ÇÏ´Â ÆÄÀÏÀÔ´Ï´Ù.  
-utils.py - submission Á¦ÀÛ¿¡ ÇÊ¿äÇÑ ¿©·¯ ÇÔ¼öµéÀÌ ÀÖ½À´Ï´Ù.  
+data_creator.py - submissionì— í•„ìš”í•œ unique_user.csv íŒŒì¼ê³¼ RecBoleì— ì‚¬ìš©ë˜ëŠ” Atomic Files (ex. .inter, .item, .user ...)ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.  
+inference.py - Movie Recommendation ëŒ€íšŒì— ë§ë„ë¡ ëª¨ë¸ì„ inferenceí•˜ë©°, submission.csv íŒŒì¼ì„ ìƒì„±í•©ë‹ˆë‹¤.  
+requirements.txt - ```pip install -r requirements.txt``` ëª…ë ¹ì–´ë¥¼ í†µí•´ ì„¤ì¹˜í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.  
+run_hyper.py - hyper parameter tuningì„ í•˜ëŠ” íŒŒì¼ì…ë‹ˆë‹¤.  
+train.py - ëª¨ë¸ í•™ìŠµì„ í•˜ëŠ” íŒŒì¼ì…ë‹ˆë‹¤.  
+utils.py - submission ì œì‘ì— í•„ìš”í•œ ì—¬ëŸ¬ í•¨ìˆ˜ë“¤ì´ ìˆìŠµë‹ˆë‹¤.  
 
 # How to run
 
-0. data/train µğ·ºÅä¸®¿¡ new_years.tsv ÆÄÀÏÀÌ ÀÖ¾î¾ßÇÕ´Ï´Ù. ¾øÀ» °æ¿ì, EDA/YYS_EDA_Year.ipynb¸¦ ½ÇÇàÇÏ¿© »ı¼ºÇÒ ¼ö ÀÖ½À´Ï´Ù.
-1. ÇĞ½ÀÇÏ°íÀÚ ÇÏ´Â ¸ğµ¨¿¡ ´ëÇÑ .yaml ÆÄÀÏÀÌ RecBole/config¿¡ ÀÖ¾î¾ß ÇÕ´Ï´Ù. ÇöÀç RecVAE.yaml¸¸ Á¸ÀçÇÕ´Ï´Ù.
-2. ÀÏºÎ ¸ğµ¨ÀÇ °æ¿ì, Trainer¸¦ ¸ÂÃãÀ¸·Î ÁöÁ¤ÇØÁà¾ß ÇÕ´Ï´Ù. ÀÚ¼¼ÇÑ ³»¿ëÀº [RecBole Docs](https://recbole.io/docs/recbole/recbole.trainer.trainer.html#module-recbole.trainer.trainer) ¿¡¼­ È®ÀÎ ¹Ù¶ø´Ï´Ù.
-3. requirements¸¦ ¼³Ä¡ÇÏ¿©¼­ È¯°æÀ» ¸ÂÃçÁİ´Ï´Ù.
-4. ```python data_creator.py``` ¸í·É¾î¸¦ ÀÔ·ÂÇÏ¿© RecBole¿¡ ÇÊ¿äÇÑ µ¥ÀÌÅÍ¸¦ »ı¼ºÇÕ´Ï´Ù.
-5. ```python train.py --model=[¸ğµ¨¸í] --config_files=[¸ğµ¨¸í.yaml]``` ¸í·É¾î¸¦ ÀÔ·ÂÇÏ¿© ÇĞ½ÀÀ» ÁøÇàÇÕ´Ï´Ù.
-6. ```python inference.py --config_files=[¸ğµ¨¸í.yaml] --type=[¸ğµ¨ÀÇ type]``` ¸í·É¾î¸¦ ÀÔ·ÂÇÏ¿© Ãß·ĞÀ» ÁøÇàÇÕ´Ï´Ù.
-7. Á¦Ãâ ÆÄÀÏÀº code/submission¿¡ ÀúÀåµË´Ï´Ù.  
+0. data/train ë””ë ‰í† ë¦¬ì— new_years.tsv íŒŒì¼ì´ ìˆì–´ì•¼í•©ë‹ˆë‹¤. ì—†ì„ ê²½ìš°, EDA/YYS_EDA_Year.ipynbë¥¼ ì‹¤í–‰í•˜ì—¬ ìƒì„±í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
+1. í•™ìŠµí•˜ê³ ì í•˜ëŠ” ëª¨ë¸ì— ëŒ€í•œ .yaml íŒŒì¼ì´ RecBole/configì— ìˆì–´ì•¼ í•©ë‹ˆë‹¤. í˜„ì¬ RecVAE.yamlë§Œ ì¡´ì¬í•©ë‹ˆë‹¤.
+2. ì¼ë¶€ ëª¨ë¸ì˜ ê²½ìš°, Trainerë¥¼ ë§ì¶¤ìœ¼ë¡œ ì§€ì •í•´ì¤˜ì•¼ í•©ë‹ˆë‹¤. ìì„¸í•œ ë‚´ìš©ì€ [RecBole Docs](https://recbole.io/docs/recbole/recbole.trainer.trainer.html#module-recbole.trainer.trainer) ì—ì„œ í™•ì¸ ë°”ëë‹ˆë‹¤.
+3. requirementsë¥¼ ì„¤ì¹˜í•˜ì—¬ì„œ í™˜ê²½ì„ ë§ì¶°ì¤ë‹ˆë‹¤.
+4. ```python data_creator.py``` ëª…ë ¹ì–´ë¥¼ ì…ë ¥í•˜ì—¬ RecBoleì— í•„ìš”í•œ ë°ì´í„°ë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
+5. ```python train.py --model=[ëª¨ë¸ëª…] --config_files=[ëª¨ë¸ëª….yaml]``` ëª…ë ¹ì–´ë¥¼ ì…ë ¥í•˜ì—¬ í•™ìŠµì„ ì§„í–‰í•©ë‹ˆë‹¤.
+6. ```python inference.py --config_files=[ëª¨ë¸ëª….yaml] --type=[ëª¨ë¸ì˜ type]``` ëª…ë ¹ì–´ë¥¼ ì…ë ¥í•˜ì—¬ ì¶”ë¡ ì„ ì§„í–‰í•©ë‹ˆë‹¤.
+7. ì œì¶œ íŒŒì¼ì€ code/submissionì— ì €ì¥ë©ë‹ˆë‹¤.  
 
 # Hyper Parameters Tuning
 
-0. Æ©´×À» ÇÏ±â À§ÇØ .hyper ÆÄÀÏÀ» »ı¼ºÇÏ¿©¼­ RecBole/hyper °æ·Î¿¡ À§Ä¡½ÃÄÑ¾ß ÇÕ´Ï´Ù. ÇöÀç RecVAE.hyper¸¸ Á¸ÀçÇÕ´Ï´Ù.
-1. ```python run_hyper.py --config_files=[¸ğµ¨¸í.yaml] --params_file=[¸ğµ¨¸í.hyper]``` ¸í·É¾î¸¦ ÀÔ·ÂÇÏ¿© Æ©´×À» ÁøÇàÇÕ´Ï´Ù.
-2. °á°ú¹° ÆÄÀÏÀº RecBole/¿¡ ÀúÀåµË´Ï´Ù.
+0. íŠœë‹ì„ í•˜ê¸° ìœ„í•´ .hyper íŒŒì¼ì„ ìƒì„±í•˜ì—¬ì„œ RecBole/hyper ê²½ë¡œì— ìœ„ì¹˜ì‹œì¼œì•¼ í•©ë‹ˆë‹¤. í˜„ì¬ RecVAE.hyperë§Œ ì¡´ì¬í•©ë‹ˆë‹¤.
+1. ```python run_hyper.py --config_files=[ëª¨ë¸ëª….yaml] --params_file=[ëª¨ë¸ëª….hyper]``` ëª…ë ¹ì–´ë¥¼ ì…ë ¥í•˜ì—¬ íŠœë‹ì„ ì§„í–‰í•©ë‹ˆë‹¤.
+2. ê²°ê³¼ë¬¼ íŒŒì¼ì€ RecBole/ì— ì €ì¥ë©ë‹ˆë‹¤.
 
 # More information
 
-¸ğµ¨ÀÇ °è¿­¿¡ µû¶ó ÇÊ¿äÇÑ input ÆÄÀÏÀÇ Á¾·ù°¡ ´Ù¸¨´Ï´Ù. ÀÚ¼¼ÇÑ ³»¿ëÀº [¸µÅ©](https://recbole.io/docs/user_guide/data/atomic_files.html) ¿¡¼­ È®ÀÎÇÒ ¼ö ÀÖ½À´Ï´Ù.  
-ÀÌ¹ø ´ëÈ¸¿¡ ÁÖ·Î »ç¿ëµÉ General °è¿­ÀÌ³ª Sequential °è¿­ÀÇ °æ¿ì .inter ÆÄÀÏ¸¸À» ÇÊ¼öÀûÀ¸·Î ¿ä±¸ÇÕ´Ï´Ù.
+ëª¨ë¸ì˜ ê³„ì—´ì— ë”°ë¼ í•„ìš”í•œ input íŒŒì¼ì˜ ì¢…ë¥˜ê°€ ë‹¤ë¦…ë‹ˆë‹¤. ìì„¸í•œ ë‚´ìš©ì€ [ë§í¬](https://recbole.io/docs/user_guide/data/atomic_files.html) ì—ì„œ í™•ì¸í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.  
+ì´ë²ˆ ëŒ€íšŒì— ì£¼ë¡œ ì‚¬ìš©ë  General ê³„ì—´ì´ë‚˜ Sequential ê³„ì—´ì˜ ê²½ìš° .inter íŒŒì¼ë§Œì„ í•„ìˆ˜ì ìœ¼ë¡œ ìš”êµ¬í•©ë‹ˆë‹¤.
