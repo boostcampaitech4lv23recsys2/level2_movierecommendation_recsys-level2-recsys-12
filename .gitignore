@@ -35,6 +35,7 @@ log/
 log_tensorboard/
 *.inter
 *.item
+*.result
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks

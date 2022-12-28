@@ -6,12 +6,12 @@ RecVAE 모델을 사용하기 위하여 RecBole을 구현하였으며, 추후 다른 모델로 사용 범위
 
 config - 모델 별 config 파일을 저장합니다. 파일의 확장자는 .yaml 입니다.  
 data - RecBole에서 사용하는 data 폴더입니다. 하위에 movie 폴더가 있으며, 이곳에 데이터가 저장됩니다.  
+hyper - hyper parameters tuning에 사용되는 .hyper 파일을 저장합니다.  
 model - 학습된 모델이 저장됩니다.  
 
 # Files
 
 data_creator.py - submission에 필요한 unique_user.csv 파일과 RecBole에 사용되는 Atomic Files (ex. .inter, .item, .user ...)를 생성합니다.  
-hyper.test - hyper parameter tuning에 사용되는 파일입니다. Tuning 하고자 하는 parameter를 전달합니다.  
 inference.py - Movie Recommendation 대회에 맞도록 모델을 inference하며, submission.csv 파일을 생성합니다.  
 requirements.txt - ```pip install -r requirements.txt``` 명령어를 통해 설치할 수 있습니다.  
 run_hyper.py - hyper parameter tuning을 하는 파일입니다.  
@@ -27,7 +27,13 @@ utils.py - submission 제작에 필요한 여러 함수들이 있습니다.
 4. ```python data_creator.py``` 명령어를 입력하여 RecBole에 필요한 데이터를 생성합니다.
 5. ```python train.py --model=[모델명] --config_files=[모델명.yaml]``` 명령어를 입력하여 학습을 진행합니다.
 6. ```python inference.py --config_files=[모델명.yaml] --type=[모델의 type]``` 명령어를 입력하여 추론을 진행합니다.
-7. 제출 파일은 code/submission에 저장됩니다.
+7. 제출 파일은 code/submission에 저장됩니다.  
+
+# Hyper Parameters Tuning
+
+0. 튜닝을 하기 위해 .hyper 파일을 생성하여서 RecBole/hyper 경로에 위치시켜야 합니다. 현재 RecVAE.hyper만 존재합니다.
+1. ```python run_hyper.py --config_files=[모델명.yaml] --params_file=[모델명.hyper]``` 명령어를 입력하여 튜닝을 진행합니다.
+2. 결과물 파일은 RecBole/에 저장됩니다.
 
 # More information
 

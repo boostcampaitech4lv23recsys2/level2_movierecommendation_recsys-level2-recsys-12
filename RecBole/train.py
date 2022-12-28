@@ -9,6 +9,8 @@ from recbole.trainer.trainer import RecVAETrainer
 from recbole.utils import get_model, init_logger, init_seed
 
 if __name__ == "__main__":
+    
+    # set args
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--model", "-m", type=str, default="RecVAE", help="name of models"
@@ -17,14 +19,10 @@ if __name__ == "__main__":
         "--dataset", "-d", type=str, default="movie", help="name of datasets"
     )
     parser.add_argument("--config_files", type=str, default=None, help="config files")
-
     args = parser.parse_args()
-
-    if args.config_files.endswith(".yaml"):
-        args.config_files = os.path.join("./config", args.config_files)
-    else:
-        args.config_files = os.path.join("./config", args.config_files + ".yaml")
-
+    
+    # set config
+    args.config_files = os.path.join("./config", args.config_files)
     config = Config(
         model=args.model, dataset=args.dataset, config_file_list=[args.config_files]
     )

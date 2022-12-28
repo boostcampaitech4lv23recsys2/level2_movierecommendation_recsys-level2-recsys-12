@@ -20,6 +20,8 @@ from utils import *
 model_type_list = ["sequential", "general", "context_aware", "knowledge_aware", "exlib"]
 
 if __name__ == "__main__":
+    
+    # set args
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--dataset", "-d", type=str, default="movie", help="name of datasets"
@@ -32,12 +34,9 @@ if __name__ == "__main__":
         help="S: Sequential, G: General, C: Context-aware, K:Knowledge-aware, E: exlib",
     )
     args = parser.parse_args()
+    args.config_files = os.path.join("./config", args.config_files)
 
-    if args.config_files.endswith(".yaml"):
-        args.config_files = os.path.join("./config", args.config_files)
-    else:
-        args.config_files = os.path.join("./config", args.config_files + ".yaml")
-
+    # choose file to inference
     BASE_DIR = "./model"
     FILE = ""
 
@@ -62,6 +61,7 @@ if __name__ == "__main__":
     else:
         FILE = file_list[0]
 
+    # load model
     model_name = FILE.split("-")[0]
     model_type = ""
 
@@ -82,6 +82,8 @@ if __name__ == "__main__":
     config = Config(
         model=model_name, dataset=args.dataset, config_file_list=[args.config_files]
     )
+    
+    # load dataset
     dataset = create_dataset(config)
 
     train_data, valid_data, test_data = data_preparation(config, dataset)

@@ -1,10 +1,13 @@
 import argparse
+import os
 
 from recbole.quick_start import objective_function
 from recbole.trainer import HyperTuning
 
 
 def main():
+    
+    # set args
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--config_files", type=str, default=None, help="fixed config files"
@@ -15,15 +18,18 @@ def main():
     )
     args, _ = parser.parse_known_args()
 
+    # get input
+    args.config_files = os.path.join("./config", args.config_files)
+    args.params_file = os.path.join("./hyper", args.params_file)
+    
     # plz set algo='exhaustive' to use exhaustive search, in this case, max_evals is auto set
-    config_file_list = (
-        args.config_files.strip().split(" ") if args.config_files else None
-    )
     hp = HyperTuning(
         objective_function,
-        algo="exhaustive",
+        algo="bayes", # random, exhaustive
+        # early_stop=10,
+        # max_evals=100,
         params_file=args.params_file,
-        fixed_config_file_list=config_file_list,
+        fixed_config_file_list=[args.config_files],
     )
     hp.run()
     hp.export_result(output_file=args.output_file)
