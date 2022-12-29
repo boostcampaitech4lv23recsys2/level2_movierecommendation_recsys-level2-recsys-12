@@ -25,7 +25,7 @@ user_inter_num_interval: "[0, inf)"
 item_inter_num_interval: "[0, inf)"
 
 # Training Settings_basic
-epochs: 1000
+epochs: 100
 train_batch_size: 128
 learner: 'adam'
 learning_rate: 0.001
@@ -44,6 +44,8 @@ gamma: 0.005
 mixture_weights: [0.75, 0.15, 0.1]
 n_enc_epochs: 3
 n_dec_epochs: 1
+model: RecVAE
+dataset: movie
 
 #Evaluation Settings
 eval_args:

@@ -1,0 +1,2 @@
+hidden_dimension choice [256, 600]
+latent_dimension choice [128, 256]
