@@ -49,7 +49,7 @@ def predict_for_all_item(external_user_id, dataset, test_data, model, config):
         new_scores = model.full_sort_predict(new_inter)
         new_scores = new_scores.view(-1, test_data.dataset.item_num)
         new_scores[:, 0] = -np.inf
-    return torch.topk(new_scores, 10)
+    return torch.topk(new_scores, 15)
 
 
 def generate_predict(
@@ -63,7 +63,7 @@ def generate_predict(
     for user in tqdm(users):
         uid_series = dataset.token2id(dataset.uid_field, [user])
         _, topk_iid_list = full_sort_topk(
-            uid_series, model, test_data, k=10, device=config["device"]
+            uid_series, model, test_data, k=15, device=config["device"]
         )
         external_item_list = dataset.id2token(dataset.iid_field, topk_iid_list.cpu())[0]
         predict.append(list(external_item_list))
