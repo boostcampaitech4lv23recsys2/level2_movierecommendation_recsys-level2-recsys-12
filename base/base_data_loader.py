@@ -7,7 +7,7 @@ class BaseDataLoader:
     merge_list : 추가하고자 하는 feature의 파일 명
     multi_hot : 장르를 multi_hot encoding 할 것인가
     """
-    def __init__(self, path="/opt/ml/input/data/train/", merge_list=["titles"], multi_hot=True):
+    def __init__(self, path="/opt/ml/input/data/train/", merge_list=[], multi_hot=True):
         self.path = path
         self.multi_hot = multi_hot
         self.merge_list = merge_list
@@ -39,10 +39,4 @@ class BaseDataLoader:
         genre = pd.read_csv(self.path+"genres"+".tsv", sep="\t")
         one_hot = pd.get_dummies(genre).groupby("item").agg(lambda x:1 if sum(x)>0 else 0).reset_index().drop_duplicates()
         self.df = pd.merge(self.df, one_hot, how="left", on="item")
-
-
-if __name__ == "__main__":
-    data = BaseDataLoader(path="/opt/ml/input/data/train/", merge_list=["genres", "years", "directors", "titles", "writers"])
-    # data = BaseDataLoader(path="/opt/ml/input/data/train/", merge_list=["titles"])
-    data.load()
-    breakpoint()
+        
