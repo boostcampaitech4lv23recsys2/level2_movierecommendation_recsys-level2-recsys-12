@@ -42,19 +42,14 @@ def evaluate(model, X, user_train, user_valid):
 
     return NDCG, HIT
 
-def make_submission(model, X, user_train, user_valid, user_decoder, item_decoder):
-
+def make_submission(model, X, user_decoder, item_decoder, args):
     mat = torch.from_numpy(X)
-    
-
     recon_mat1 = model.pred.cpu()
     recon_mat1[mat == 1] = -np.inf
     rec_list1 = recon_mat1.argsort(dim = 1)
     prediction = []
     for user, rec1 in tqdm(enumerate(rec_list1)):
-        uv = user_valid[user]
-
-        for item in rec1[-10:].cpu().numpy().tolist()[::-1]:
+        for item in rec1[-args.predict_size:].cpu().numpy().tolist()[::-1]:
             prediction.append([user_decoder[user], item_decoder[item]])
 
     return prediction
