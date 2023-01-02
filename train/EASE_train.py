@@ -22,11 +22,7 @@ def main(args):
     ease = EASE()
     
     ease.fit(train_df, args.lambda_)
-    #breakpoint()
     result_df = ease.predict(train_df, users, items, args.K)
-    
-    print(result_df)
-
 
     file_name = datetime.now(timezone('Asia/Seoul')).strftime('%Y%m%d_%H%M%S')
     result_df[["user", "item"]].to_csv(args.output_dir + f"EASE_{file_name}_{args.K}.csv", index=False)
