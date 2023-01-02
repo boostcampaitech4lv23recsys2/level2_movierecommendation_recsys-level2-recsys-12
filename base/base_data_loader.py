@@ -7,7 +7,7 @@ class BaseDataLoader:
     merge_list : 추가하고자 하는 feature의 파일 명
     multi_hot : 장르를 multi_hot encoding 할 것인가
     """
-    def __init__(self, path="/opt/ml/input/data/train/", merge_list=[], multi_hot=True):
+    def __init__(self, path="/opt/ml/input/data/train/", merge_list=[], multi_hot=False):
         self.path = path
         self.multi_hot = multi_hot
         self.merge_list = merge_list
