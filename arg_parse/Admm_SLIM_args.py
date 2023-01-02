@@ -19,6 +19,8 @@ def get_args():
     parser.add_argument("--positive", type=bool, default=True, help="set positive")
     parser.add_argument("--verbose", type=bool, default=False, help="set verbose")
 
+    parser.add_argument("--predict_size", type=int, default=10, help="예측할 영화의 개수를 입력하세요.")
+
     args = parser.parse_args()
 
     return args

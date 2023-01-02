@@ -20,10 +20,11 @@ def main(args):
     ndcg, hit = evaluate(model = model, X = X.todense(), user_train = user_train, user_valid = user_valid)
     print(f'NDCG@10: {ndcg:.5f}| HIT@10: {hit:.5f}')
     pd.DataFrame(
-        make_submission(model = model, X = X.todense(), user_train = user_train, user_valid = user_valid, user_decoder=user_decoder, item_decoder=item_decoder), 
+        make_submission(model = model, X = X.todense(), user_decoder=user_decoder, item_decoder=item_decoder, args=args), 
         columns=["user", "item"]).to_csv(args.save_path + "admm_slim_submission.csv", index=False
         )
 
 if __name__ == "__main__":
     args = get_args()
     main(args)
+    
