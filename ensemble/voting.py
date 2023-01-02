@@ -1,4 +1,5 @@
 # import libraries
+import math
 import os
 import sys
 
@@ -52,9 +53,16 @@ while True:
     break
 
 
+# make selected file list
+new_file_list = []
+for idx in number_list:
+    new_file_list.append(file_list[idx])
+file_list = new_file_list
+
+
 # show selected files
 print("\n----------Files you selected----------")
-for idx in number_list:
+for idx in range(len(file_list)):
     print(f"[{idx}] : {file_list[idx]}")
 print("--------------------------------------\n")
 
@@ -73,7 +81,7 @@ while True:
     if len(ratio1_list) != 2:
         print("Wrong ratios. Try again.\n")
         continue
-    if (ratio1_list[0] + ratio1_list[1]) != 1:
+    if math.fabs(sum(ratio1_list) - 1.0) > sys.float_info.epsilon:
         print("Sum of ratios is not 1. Try again.\n")
         continue
     break
@@ -88,10 +96,10 @@ while True:
     ratio2_list = [float(item) for item in inputs.split() if inputs]
 
     # exception handling
-    if len(ratio1_list) < 2:
+    if len(ratio2_list) < 2:
         print("Wrong ratios. Try again.\n")
         continue
-    if sum(ratio2_list) != 1:
+    if math.fabs(sum(ratio2_list) - 1.0) > sys.float_info.epsilon:
         print("Sum of ratios is not 1. Try again.\n")
         continue
     break
@@ -101,14 +109,14 @@ while True:
 print("\n----------input information----------")
 print(f"Ratio of Top1-10 & Top11-15:\n{ratio1_list[0]} : {ratio1_list[1]}")
 print("Ratio of input csv files:")
-for idx in number_list:
+for idx in range(len(file_list)):
     print(f"[{idx}] : {file_list[idx]} - {ratio2_list[idx]}")
 print("-------------------------------------\n")
 
 
 # load csv files
 csv_list = []
-for idx in number_list:
+for idx in range(len(file_list)):
     csv_file = pd.read_csv(os.path.join("./source", file_list[idx]))
     csv_list.append(csv_file)
 
@@ -146,8 +154,10 @@ for user in user_list:
         new_user_list.append(user)
 df = pd.DataFrame({"user": new_user_list, "item": movie_list})
 result_name = ""
-for i in range(len(number_list)):
+for i in range(len(file_list)):
     result_name += str(file_list[i][:-4]) + str(ratio2_list[i])
     result_name += "_"
 result_name += f"top10_{ratio1_list[0]}_top15_{ratio1_list[1]}.csv"
+if not os.path.exists("./result"):
+    os.makedirs("./result")
 df.to_csv(os.path.join("./result", result_name), index=False)
