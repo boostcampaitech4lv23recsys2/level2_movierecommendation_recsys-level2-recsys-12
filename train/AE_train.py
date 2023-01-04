@@ -18,7 +18,7 @@ def main(args):
 
         wandb.login()
         wandb.init(project=args.wandb, entity="movie-recsys-12")
-        wandb.run.name = f"bs:{args.batch_size}_lr:{args.lr}"
+        wandb.run.name = f"autoencoder_bs:{args.batch_size}_lr:{args.lr}"
         wandb.config = vars(args)
     set_seed(args.seed)
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

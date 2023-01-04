@@ -1,0 +1,17 @@
+program: AE_train.py
+method: grid
+name: "sweep_AE"
+metric:
+  name: "RECALL@10"
+  goal: maximize
+parameters:
+  wandb:
+    values: ["sweep_AE"]
+  batch_size:
+    values: [32, 64, 128, 256, 512, 1024]
+  dropout_rate:
+    min: 0.005
+    max: 0.3
+  weight_decay:
+    min: 0.000001
+    max: 0.001
