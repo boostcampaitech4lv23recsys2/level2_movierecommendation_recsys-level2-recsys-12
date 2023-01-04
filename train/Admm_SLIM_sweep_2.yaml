@@ -1,0 +1,28 @@
+program: Admm_SLIM_train.py
+method: grid
+name: "sweep_Admm_SLIM"
+metric:
+  name: "RECALL@10"
+  goal: maximize
+parameters:
+  wandb:
+    values: [True]
+  sweep:
+    values: [True]
+  # lambda_1:
+  #   min: 1
+  #   max: 20
+  # lambda_2:
+  #   min: 1
+  #   max: 20
+  # rho:
+  #   min: 1
+  #   max: 20
+  # eps_rel:
+  #   min: 0.00001
+  #   max: 0.005
+  # eps_abs:
+  #   min: 0.00001
+  #   max: 0.005
+  n_iter:
+    values: [250, 300, 350, 400]
