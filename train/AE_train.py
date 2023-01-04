@@ -5,7 +5,7 @@ sys.path.append("../")
 import pandas as pd
 from torch.utils.data import DataLoader
 
-from arg_parse.MultiDAE_args import get_args
+from arg_parse.AE_args import get_args
 from data_loader.AE_dataloader import *
 from models.Multi_DAE import *
 from models.Multi_VAE import *
