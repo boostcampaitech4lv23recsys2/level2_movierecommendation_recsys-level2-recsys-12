@@ -28,8 +28,8 @@ Naver Boostcamp AI Tech 4기 Recsys 12조, **Recommendation is All You Need**
 
 - **강태훈** : Template 구조 선정, ADMM-SLIM 모델 구현, AutoEncoder 계열 모델 성능 비교  
 - **권준혁** : S3rec, SASrec 모델 개선, 튜닝 시 sweep 사용  
-- **김다은** : MultiVAE 베이스라인 구현, MultiVAE RecBole  
-- **류지수** : EASE 베이스라인 구현, EASE RecBole 적용  
+- **김다은** : MultiVAE 모델 구현, MultiVAE & MultiDAE 모델 RecBole 적용  
+- **류지수** : EASE, EASER 모델 구현, EASE RecBole 적용  
 - **유영서** : RecBole 환경 구축, RecVAE 모델 구현, Voting 구현  
 
 
@@ -58,10 +58,14 @@ Slack | Notion | W&B | Github
 
 모델 실험 결과는 다음과 같습니다.  
 
-| Model | ADMMSLIM | EASE | MultiVAE | RecVAE | S3Rec |
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| public Recall@10 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
-| private Recall@10 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 |
+<p>
+  <img src="https://user-images.githubusercontent.com/67851701/210791395-81d1dff7-ae54-449b-92da-97ed651e1d32.png" width="600">  
+</p>
+
+| Model | EASER | EASE | S3Rec | RecVAE | MultiVAE | MultiDAE | ADMMSLIM |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| public Recall@10 | 0.1612 | 0.1600 | 0.1000 | 0.1367 | 0.1366 | 0.1346 | 0.1321 |
+| private Recall@10 | 0.1603 | 0.1600 | 0.0877 | 0.1362 | 0.1375 | 0.1365 | 0.1317 |
 
 
 ## :flower_playing_cards: Voting Strategy
@@ -92,14 +96,16 @@ Voting Strategy에 대한 더 자세한 내용은 [앙상블 전략](https://git
 ## :100: Competition Result
 
 <p>
-  <img src="https://user-images.githubusercontent.com/67851701/210548268-2abe03f6-b6c3-45d9-b22f-41093d75d5c4.JPG" width="400">  
+  <img src="https://user-images.githubusercontent.com/67851701/210792133-8b8104a5-1ccb-49e3-864b-2ac6f1984788.png" width="600">  
 </p>
+
 
 
 | 리더보드 | Recall@10 | 순위 |
 | :---: | :---: | :---: |
-| public | 0.0000 | 00등 |
-| private | 0.0000 | 00등 |
+| public | 0.1644 | 7등 |
+| private | 0.1626 | 6등 |
 
-**최종 순위: 전체 13팀 중 00등**
-<p> <img src="https://user-images.githubusercontent.com/67851701/206601614-09bd63a0-472d-4884-8ff2-f992f9787dba.JPG"> </p>
+**최종 순위: 전체 13팀 중 6등**
+<p> <img src="https://user-images.githubusercontent.com/67851701/210792341-4c230d33-599c-4816-90a6-a8c72187f2a5.png"> </p>
+
