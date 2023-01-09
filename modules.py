@@ -56,14 +56,15 @@ class Embeddings(nn.Module):
         self.args = args
 
     def forward(self, input_ids):
-        seq_length = input_ids.size(1)
-        position_ids = torch.arange(
-            seq_length, dtype=torch.long, device=input_ids.device
-        )
-        position_ids = position_ids.unsqueeze(0).expand_as(input_ids)
+        # seq_length = input_ids.size(1)
+        # position_ids = torch.arange(
+        #     seq_length, dtype=torch.long, device=input_ids.device
+        # )
+        # position_ids = position_ids.unsqueeze(0).expand_as(input_ids)
         items_embeddings = self.item_embeddings(input_ids)
-        position_embeddings = self.position_embeddings(position_ids)
-        embeddings = items_embeddings + position_embeddings
+        # position_embeddings = self.position_embeddings(position_ids)
+        # embeddings = items_embeddings + position_embeddings
+        embeddings = items_embeddings
 
         embeddings = self.LayerNorm(embeddings)
         embeddings = self.dropout(embeddings)
