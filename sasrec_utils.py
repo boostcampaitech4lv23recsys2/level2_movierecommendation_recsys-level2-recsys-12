@@ -37,7 +37,7 @@ def neg_sample(item_set, item_size):
 class EarlyStopping:
     """Early stops the training if validation loss doesn't improve after a given patience."""
 
-    def __init__(self, checkpoint_path, patience=7, verbose=False, delta=0):
+    def __init__(self, checkpoint_path, patience=7, verbose=False, delta=0, sweep=False):
         """
         Args:
             patience (int): How long to wait after last time validation loss improved.
@@ -54,6 +54,7 @@ class EarlyStopping:
         self.best_score = None
         self.early_stop = False
         self.delta = delta
+        self.sweep = sweep
 
     def compare(self, score):
         for i in range(len(score)):
@@ -80,8 +81,10 @@ class EarlyStopping:
 
     def save_checkpoint(self, score, model):
         """Saves model when the performance is better."""
-        if self.verbose:
+        if self.verbose and not self.sweep:
             print(f"Better performance. Saving model ...")
+        if not self.sweep:
+            torch.save(model.state_dict(), self.checkpoint_path)
         torch.save(model.state_dict(), self.checkpoint_path)
         self.score_min = score
 
@@ -152,7 +155,7 @@ def generate_rating_matrix_submission(user_seq, num_users, num_items):
     return rating_matrix
 
 
-def generate_submission_file(data_file, preds):
+def generate_submission_file(args, data_file, preds):
 
     rating_df = pd.read_csv(data_file)
     users = rating_df["user"].unique()
@@ -162,9 +165,10 @@ def generate_submission_file(data_file, preds):
     for index, items in enumerate(preds):
         for item in items:
             result.append((users[index], item))
-
+    if not os.path.exists("submission"):
+        os.makedirs("submission")
     pd.DataFrame(result, columns=["user", "item"]).to_csv(
-        "submission/submission.csv", index=False
+        f"submission/submission_batch_size_{args.batch_size}_max_seq_length_{args.max_seq_length}_hidden_size_{args.hidden_size}.csv", index=False
     )
 
 
@@ -310,8 +314,8 @@ def mapk(actual, predicted, k=10):
     Parameters
     ----------
     actual : list
-             A list of lists of elements that are to be predicted
-             (order doesn't matter in the lists)
+            A list of lists of elements that are to be predicted
+            (order doesn't matter in the lists)
     predicted : list
                 A list of lists of predicted elements
                 (order matters in the lists)
@@ -447,7 +451,8 @@ class LrScheduler:
                 max_lr=args.lr_max_lr, 
                 step_size_up=args.lr_step_size_up, 
                 step_size_down=args.lr_step_size_down, 
-                mode=args.lr_mode)
+                mode=args.lr_mode,
+                cycle_momentum=False)
         elif args.scheduler == "CosineAnnealingWarmUpRestarts":
             self.scheduler = CosineAnnealingWarmUpRestarts(
                 optimizer, 

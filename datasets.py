@@ -3,7 +3,7 @@ import random
 import torch
 from torch.utils.data import Dataset
 
-from utils import neg_sample
+from sasrec_utils import neg_sample
 
 
 class PretrainDataset(Dataset):

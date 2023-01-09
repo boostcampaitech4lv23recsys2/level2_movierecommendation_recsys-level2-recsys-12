@@ -4,7 +4,7 @@ import torch.nn as nn
 import tqdm
 from torch.optim import Adam
 
-from utils import ndcg_k, recall_at_k, LrScheduler
+from sasrec_utils import ndcg_k, recall_at_k, LrScheduler
 
 
 class Trainer:
@@ -138,13 +138,15 @@ class PretrainTrainer(Trainer):
             f"MAP-{self.args.map_weight}-"
             f"SP-{self.args.sp_weight}"
         )
-
-        pretrain_data_iter = tqdm.tqdm(
-            enumerate(pretrain_dataloader),
-            desc=f"{self.args.model_name}-{self.args.data_name} Epoch:{epoch}",
-            total=len(pretrain_dataloader),
-            bar_format="{l_bar}{r_bar}",
-        )
+        if self.args.tqdm == 1:
+            pretrain_data_iter = tqdm.tqdm(
+                enumerate(pretrain_dataloader),
+                desc=f"{self.args.model_name}-{self.args.data_name} Epoch:{epoch}",
+                total=len(pretrain_dataloader),
+                bar_format="{l_bar}{r_bar}",
+            )
+        else:
+            pretrain_data_iter = enumerate(pretrain_dataloader)
 
         self.model.train()
         aap_loss_avg = 0.0
@@ -153,6 +155,8 @@ class PretrainTrainer(Trainer):
         sp_loss_avg = 0.0
 
         for i, batch in pretrain_data_iter:
+            if self.args.tqdm != 1 and (i % 500 == 0 or i == len(pretrain_dataloader) - 1):
+                print(f"NO tqdm. Pretrain progress: {i} / {len(pretrain_dataloader)}")
             # 0. batch_data will be sent into the device(GPU or CPU)
             batch = tuple(t.to(self.device) for t in batch)
             (
@@ -165,7 +169,9 @@ class PretrainTrainer(Trainer):
                 neg_segment,
             ) = batch
 
-            aap_loss, mip_loss, map_loss, sp_loss = self.model.pretrain(
+            # aap_loss, mip_loss, map_loss, sp_loss = self.model.pretrain(
+            aap_loss, mip_loss, map_loss = self.model.pretrain(
+            # aap_loss, mip_loss = self.model.pretrain(
                 attributes,
                 masked_item_sequence,
                 pos_items,
@@ -179,7 +185,7 @@ class PretrainTrainer(Trainer):
                 self.args.aap_weight * aap_loss
                 + self.args.mip_weight * mip_loss
                 + self.args.map_weight * map_loss
-                + self.args.sp_weight * sp_loss
+                # + self.args.sp_weight * sp_loss
             )
 
             self.optim.zero_grad()
@@ -189,15 +195,19 @@ class PretrainTrainer(Trainer):
             aap_loss_avg += aap_loss.item()
             mip_loss_avg += mip_loss.item()
             map_loss_avg += map_loss.item()
-            sp_loss_avg += sp_loss.item()
-
-        num = len(pretrain_data_iter) * self.args.pre_batch_size
+            # sp_loss_avg += sp_loss.item()
+            
+        if self.args.tqdm == 1:
+            num = len(pretrain_data_iter) * self.args.pre_batch_size
+        else: # generator의 길이를 에러 없이 받기 위해.
+            num = len(pretrain_dataloader) * self.args.pre_batch_size
+            
         losses = {
             "epoch": epoch,
             "aap_loss_avg": aap_loss_avg / num,
             "mip_loss_avg": mip_loss_avg / num,
             "map_loss_avg": map_loss_avg / num,
-            "sp_loss_avg": sp_loss_avg / num,
+            # "sp_loss_avg": sp_loss_avg / num,
         }
         print(desc)
         print(str(losses))
@@ -226,19 +236,24 @@ class FinetuneTrainer(Trainer):
     def iteration(self, epoch, dataloader, mode="train"):
 
         # Setting the tqdm progress bar
-
-        rec_data_iter = tqdm.tqdm(
-            enumerate(dataloader),
-            desc="Recommendation EP_%s:%d" % (mode, epoch),
-            total=len(dataloader),
-            bar_format="{l_bar}{r_bar}",
-        )
+        
+        if self.args.tqdm == 1:
+            rec_data_iter = tqdm.tqdm(
+                enumerate(dataloader),
+                desc="Recommendation EP_%s:%d" % (mode, epoch),
+                total=len(dataloader),
+                bar_format="{l_bar}{r_bar}",
+            )
+        else:
+            rec_data_iter = enumerate(dataloader)
         if mode == "train":
             self.model.train()
             rec_avg_loss = 0.0
             rec_cur_loss = 0.0
 
             for i, batch in rec_data_iter:
+                if self.args.tqdm != 1 and (i % 500 == 0 or i == len(dataloader) - 1):
+                    print(f"NO tqdm. Finetune progress: {i} / {len(dataloader)}")
                 # 0. batch_data will be sent into the device(GPU or CPU)
                 batch = tuple(t.to(self.device) for t in batch)
                 _, input_ids, target_pos, target_neg, _ = batch
@@ -255,11 +270,18 @@ class FinetuneTrainer(Trainer):
             # scheduler.step
             self.scheduler.step()
 
-            post_fix = {
-                "epoch": epoch,
-                "rec_avg_loss": "{:.4f}".format(rec_avg_loss / len(rec_data_iter)),
-                "rec_cur_loss": "{:.4f}".format(rec_cur_loss),
-            }
+            if self.args.tqdm == 1:
+                post_fix = {
+                    "epoch": epoch,
+                    "rec_avg_loss": "{:.4f}".format(rec_avg_loss / len(rec_data_iter)),
+                    "rec_cur_loss": "{:.4f}".format(rec_cur_loss),
+                }
+            else: # generator의 길이를 에러 없이 받기 위해.
+                post_fix = {
+                    "epoch": epoch,
+                    "rec_avg_loss": "{:.4f}".format(rec_avg_loss / len(dataloader)),
+                    "rec_cur_loss": "{:.4f}".format(rec_cur_loss),
+                }
 
             if (epoch + 1) % self.args.log_freq == 0:
                 print(str(post_fix))

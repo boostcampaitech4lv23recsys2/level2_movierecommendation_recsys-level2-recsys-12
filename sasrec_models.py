@@ -77,17 +77,17 @@ class S3RecModel(nn.Module):
         score = torch.mul(context, segment)  # [B H]
         return torch.sigmoid(torch.sum(score, dim=-1))  # [B]
 
-    #
     def add_position_embedding(self, sequence):
 
-        seq_length = sequence.size(1)
-        position_ids = torch.arange(
-            seq_length, dtype=torch.long, device=sequence.device
-        )
-        position_ids = position_ids.unsqueeze(0).expand_as(sequence)
+        # seq_length = sequence.size(1)
+        # position_ids = torch.arange(
+        #     seq_length, dtype=torch.long, device=sequence.device
+        # )
+        # position_ids = position_ids.unsqueeze(0).expand_as(sequence)
         item_embeddings = self.item_embeddings(sequence)
-        position_embeddings = self.position_embeddings(position_ids)
-        sequence_emb = item_embeddings + position_embeddings
+        # position_embeddings = self.position_embeddings(position_ids)
+        # sequence_emb = item_embeddings + position_embeddings
+        sequence_emb = item_embeddings
         sequence_emb = self.LayerNorm(sequence_emb)
         sequence_emb = self.dropout(sequence_emb)
 
@@ -152,47 +152,49 @@ class S3RecModel(nn.Module):
         map_mask = (masked_item_sequence == self.args.mask_id).float()
         map_loss = torch.sum(map_loss * map_mask.flatten().unsqueeze(-1))
 
-        # SP
-        # segment context
-        segment_context = self.add_position_embedding(masked_segment_sequence)
-        segment_mask = (masked_segment_sequence == 0).float() * -1e8
-        segment_mask = torch.unsqueeze(torch.unsqueeze(segment_mask, 1), 1)
-        segment_encoded_layers = self.item_encoder(
-            segment_context, segment_mask, output_all_encoded_layers=True
-        )
+        # # SP
+        # # segment context
+        # segment_context = self.add_position_embedding(masked_segment_sequence)
+        # segment_mask = (masked_segment_sequence == 0).float() * -1e8
+        # segment_mask = torch.unsqueeze(torch.unsqueeze(segment_mask, 1), 1)
+        # segment_encoded_layers = self.item_encoder(
+        #     segment_context, segment_mask, output_all_encoded_layers=True
+        # )
 
-        # take the last position hidden as the context
-        segment_context = segment_encoded_layers[-1][:, -1, :]  # [B H]
-        # pos_segment
-        pos_segment_emb = self.add_position_embedding(pos_segment)
-        pos_segment_mask = (pos_segment == 0).float() * -1e8
-        pos_segment_mask = torch.unsqueeze(torch.unsqueeze(pos_segment_mask, 1), 1)
-        pos_segment_encoded_layers = self.item_encoder(
-            pos_segment_emb, pos_segment_mask, output_all_encoded_layers=True
-        )
-        pos_segment_emb = pos_segment_encoded_layers[-1][:, -1, :]
+        # # take the last position hidden as the context
+        # segment_context = segment_encoded_layers[-1][:, -1, :]  # [B H]
+        # # pos_segment
+        # pos_segment_emb = self.add_position_embedding(pos_segment)
+        # pos_segment_mask = (pos_segment == 0).float() * -1e8
+        # pos_segment_mask = torch.unsqueeze(torch.unsqueeze(pos_segment_mask, 1), 1)
+        # pos_segment_encoded_layers = self.item_encoder(
+        #     pos_segment_emb, pos_segment_mask, output_all_encoded_layers=True
+        # )
+        # pos_segment_emb = pos_segment_encoded_layers[-1][:, -1, :]
 
-        # neg_segment
-        neg_segment_emb = self.add_position_embedding(neg_segment)
-        neg_segment_mask = (neg_segment == 0).float() * -1e8
-        neg_segment_mask = torch.unsqueeze(torch.unsqueeze(neg_segment_mask, 1), 1)
-        neg_segment_encoded_layers = self.item_encoder(
-            neg_segment_emb, neg_segment_mask, output_all_encoded_layers=True
-        )
-        neg_segment_emb = neg_segment_encoded_layers[-1][:, -1, :]  # [B H]
+        # # neg_segment
+        # neg_segment_emb = self.add_position_embedding(neg_segment)
+        # neg_segment_mask = (neg_segment == 0).float() * -1e8
+        # neg_segment_mask = torch.unsqueeze(torch.unsqueeze(neg_segment_mask, 1), 1)
+        # neg_segment_encoded_layers = self.item_encoder(
+        #     neg_segment_emb, neg_segment_mask, output_all_encoded_layers=True
+        # )
+        # neg_segment_emb = neg_segment_encoded_layers[-1][:, -1, :]  # [B H]
 
-        pos_segment_score = self.segment_prediction(segment_context, pos_segment_emb)
-        neg_segment_score = self.segment_prediction(segment_context, neg_segment_emb)
+        # pos_segment_score = self.segment_prediction(segment_context, pos_segment_emb)
+        # neg_segment_score = self.segment_prediction(segment_context, neg_segment_emb)
 
-        sp_distance = torch.sigmoid(pos_segment_score - neg_segment_score)
+        # sp_distance = torch.sigmoid(pos_segment_score - neg_segment_score)
 
-        sp_loss = torch.sum(
-            self.criterion(
-                sp_distance, torch.ones_like(sp_distance, dtype=torch.float32)
-            )
-        )
+        # sp_loss = torch.sum(
+        #     self.criterion(
+        #         sp_distance, torch.ones_like(sp_distance, dtype=torch.float32)
+        #     )
+        # )
 
-        return aap_loss, mip_loss, map_loss, sp_loss
+        # return aap_loss, mip_loss, map_loss, sp_loss
+        return aap_loss, mip_loss, map_loss
+        # return aap_loss, mip_loss
 
     # Fine tune
     # same as SASRec
