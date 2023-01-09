@@ -48,8 +48,9 @@ Slack | Notion | W&B | Github
 ## :books: Project Outline
 
 <p>
-  <img src="https://user-images.githubusercontent.com/67851701/210553870-693aed13-784b-4bc2-82d3-2778399f0a15.png" width="800">  
+  <img src="https://user-images.githubusercontent.com/67851701/211236869-634c45b5-971d-475f-ac7f-31b65f8c6963.png" width="800">  
 </p>
+
 
 다양한 모델을 실험한 후, Top10을 보다 효과적으로 앙상블 하기 위해 고안안 voting 알고리즘에 Top15를 넣어준 후, 최종 Top10을 선발합니다.  
 
@@ -106,6 +107,6 @@ Voting Strategy에 대한 더 자세한 내용은 [앙상블 전략](https://git
 | public | 0.1644 | 7등 |
 | private | 0.1626 | 6등 |
 
-**최종 순위: 전체 13팀 중 6등**
+**최종 순위: 6등**
 <p> <img src="https://user-images.githubusercontent.com/67851701/210792341-4c230d33-599c-4816-90a6-a8c72187f2a5.png"> </p>
 
