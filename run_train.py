@@ -6,9 +6,9 @@ import torch
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
 from datasets import SASRecDataset
-from models import S3RecModel
+from sasrec_models import S3RecModel
 from trainers import FinetuneTrainer
-from utils import (
+from sasrec_utils import (
     EarlyStopping,
     check_path,
     get_item2attribute_json,
@@ -23,14 +23,16 @@ warnings.filterwarnings(action="ignore")
 def main():
     parser = argparse.ArgumentParser()
 
+    parser.add_argument("--sweep", default="True", type=bool)
+    parser.add_argument("--wandb", default=1, type=int, help="option for running wandb")
+
     parser.add_argument("--data_dir", default="../data/train/", type=str)
     parser.add_argument("--output_dir", default="output/", type=str)
     parser.add_argument("--data_name", default="Ml", type=str)
 
     # model args
-    parser.add_argument("--model_name", default="Finetune_full", type=str)
     parser.add_argument(
-        "--hidden_size", type=int, default=64, help="hidden size of transformer model"
+        "--hidden_size", type=int, default=128, help="hidden size of transformer model"
     )
     parser.add_argument(
         "--num_hidden_layers", type=int, default=2, help="number of layers"
@@ -46,32 +48,39 @@ def main():
     parser.add_argument(
         "--hidden_dropout_prob", type=float, default=0.5, help="hidden dropout p"
     )
-    parser.add_argument("--initializer_range", type=float, default=0.02)
-    parser.add_argument("--max_seq_length", default=50, type=int)
+    parser.add_argument("--initializer_range", type=float, default=0.01)
+    parser.add_argument("--max_seq_length", default=200, type=int)
 
     # train args
     parser.add_argument("--lr", type=float, default=0.001, help="learning rate of adam")
     parser.add_argument(
-        "--batch_size", type=int, default=256, help="number of batch_size"
+        "--batch_size", type=int, default=64, help="number of batch_size"
     )
     parser.add_argument("--epochs", type=int, default=200, help="number of epochs")
     parser.add_argument("--no_cuda", action="store_true")
     parser.add_argument("--log_freq", type=int, default=1, help="per epoch print res")
     parser.add_argument("--seed", default=42, type=int)
 
+    parser.add_argument("--mask_p", type=float, default=0.2, help="mask probability")
+    parser.add_argument("--aap_weight", type=float, default=0.2, help="aap loss weight")
+    parser.add_argument("--mip_weight", type=float, default=1.5, help="mip loss weight")
+    parser.add_argument("--map_weight", type=float, default=1.0, help="map loss weight")
+    parser.add_argument("--sp_weight", type=float, default=0.5, help="sp loss weight")
+
     parser.add_argument(
         "--weight_decay", type=float, default=0.0, help="weight_decay of adam"
     )
     parser.add_argument(
-        "--adam_beta1", type=float, default=0.9, help="adam first beta value"
+        "--adam_beta1", type=float, default=0.95, help="adam first beta value"
     )
     parser.add_argument(
         "--adam_beta2", type=float, default=0.999, help="adam second beta value"
     )
     parser.add_argument("--gpu_id", type=str, default="0", help="gpu_id")
 
-    parser.add_argument("--using_pretrain", action="store_true")
-    parser.add_argument("--wandb", default="NO_USE", type=str, help="option for running wandb")
+    # parser.add_argument("--using_pretrain", action="store_true")
+    parser.add_argument("--using_pretrain", default=True)
+    parser.add_argument("--tqdm", default=1, type=int, help="option for running tqdm")
     
     # LR Scheduler
     parser.add_argument("--scheduler", type=str, default="None", help="Choice LR-Scheduler")
@@ -95,14 +104,14 @@ def main():
     parser.add_argument("--lr_eta_min", type=float, default=0.001, help="scheduler lr eta_min")
     parser.add_argument("--lr_eta_max", type=float, default=0.01, help="scheduler lr eta_max")
 
+    parser.add_argument("--model_name", default="Finetune_full", type=str)
+
     args = parser.parse_args()
 
-    if args.wandb != "NO_USE":
-        import wandb
-        wandb.login()
-        wandb.init(project=args.wandb, entity="movie-recsys-12")
-        wandb.run.name = f"bs:{args.batch_size}_lr:{args.lr}"
-        wandb.config = vars(args)
+    # save model args
+    args_str = f"{args.model_name}_{args.data_name}_max_seq_len_{args.max_seq_length}_hidden_{args.hidden_size}_beta2_{args.adam_beta2}_attn_drop_{args.attention_probs_dropout_prob}"
+    args.log_file = os.path.join(args.output_dir, args_str + ".txt")
+    print(str(args))
 
     set_seed(args.seed)
     check_path(args.output_dir)
@@ -122,11 +131,6 @@ def main():
     args.item_size = max_item + 2
     args.mask_id = max_item + 1
     args.attribute_size = attribute_size + 1
-
-    # save model args
-    args_str = f"{args.model_name}-{args.data_name}"
-    args.log_file = os.path.join(args.output_dir, args_str + ".txt")
-    print(str(args))
 
     args.item2attribute = item2attribute
     # set item score in train set to `0` in validation
@@ -154,6 +158,12 @@ def main():
         test_dataset, sampler=test_sampler, batch_size=args.batch_size
     )
 
+    if args.wandb:
+        import wandb
+        wandb.login()
+    
+        wandb.init(project="max_seq_len_200_sweep", entity="movie-recsys-12", config=vars(args))
+        # wandb.run.name = f"{args_str}"
     model = S3RecModel(args=args)
 
     trainer = FinetuneTrainer(
@@ -162,7 +172,8 @@ def main():
 
     print(args.using_pretrain)
     if args.using_pretrain:
-        pretrained_path = os.path.join(args.output_dir, "Pretrain.pt")
+        # pretrained_path = os.path.join(args.output_dir, f"pretrain_max_seq_len_{args.max_seq_length}_hidden_{args.hidden_size}_aap_{args.aap_weight}_mip_{args.mip_weight}_map_{args.map_weight}.pt")
+        pretrained_path = os.path.join(args.output_dir, f"pretrain_max_seq_len_{args.max_seq_length}.pt")
         try:
             trainer.load(pretrained_path)
             print(f"Load Checkpoint From {pretrained_path}!")
@@ -172,12 +183,12 @@ def main():
     else:
         print("Not using pretrained model. The Model is same as SASRec")
 
-    early_stopping = EarlyStopping(args.checkpoint_path, patience=10, verbose=True)
+    early_stopping = EarlyStopping(args.checkpoint_path, patience=10, verbose=True, sweep=args.sweep)
     for epoch in range(args.epochs):
         trainer.train(epoch)
 
         scores, _ = trainer.valid(epoch)
-        if args.wandb != "NO_USE":
+        if args.wandb:
             wandb.log(
                 {
                     "RECALL@5": scores[0],
@@ -191,16 +202,6 @@ def main():
         if early_stopping.early_stop:
             print("Early stopping")
             break
-
-    trainer.args.train_matrix = test_rating_matrix
-    print("---------------Change to test_rating_matrix!-------------------")
-    # load the best model
-    trainer.model.load_state_dict(torch.load(args.checkpoint_path))
-    scores, result_info = trainer.test(0)
-    print(result_info)
-
-    if args.wandb != "NO_USE":
-        wandb.finish()
 
 
 if __name__ == "__main__":
