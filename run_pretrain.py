@@ -80,7 +80,7 @@ def main():
     )
     parser.add_argument("--gpu_id", type=str, default="0", help="gpu_id")
     
-    parser.add_argument("--wandb", default=True, type=bool, help="option for running wandb")
+    parser.add_argument("--wandb", default=1, type=int, help="option for running wandb")
     parser.add_argument("--tqdm", default=1, type=int, help="option for running tqdm")
     
     # LR Scheduler
@@ -145,33 +145,33 @@ def main():
         wandb.init(project="max_len_200", entity="movie-recsys-12", config=vars(args))
         wandb.run.name = f"max_len: {args.max_seq_length} hs: {args.hidden_size} atten_do: {args.attention_probs_dropout_prob} hidden_do: {args.hidden_dropout_prob} bs:{args.batch_size} lr:{args.lr}"
     
-        for epoch in range(args.pre_epochs):
-            pretrain_sampler = RandomSampler(pretrain_dataset)
-            pretrain_dataloader = DataLoader(
-                pretrain_dataset, sampler=pretrain_sampler, batch_size=args.pre_batch_size
+    for epoch in range(args.pre_epochs):
+        pretrain_sampler = RandomSampler(pretrain_dataset)
+        pretrain_dataloader = DataLoader(
+            pretrain_dataset, sampler=pretrain_sampler, batch_size=args.pre_batch_size
+        )
+
+        losses = trainer.pretrain(epoch, pretrain_dataloader)
+
+        # ## comparing `sp_loss_avg``
+        loss_avg = (losses["aap_loss_avg"] + losses["mip_loss_avg"] + losses["map_loss_avg"] * 0.1) / 3
+        # early_stopping(np.array([-losses["aap_loss_avg"]]), trainer.model)
+        early_stopping(np.array([loss_avg]), trainer.model)
+        
+        if args.wandb:
+            wandb.log(
+                {
+                    "aap_loss_avg": losses["aap_loss_avg"],
+                    "mip_loss_avg": losses["mip_loss_avg"],
+                    "map_loss_avg": losses["map_loss_avg"],
+                    "loss_avg": loss_avg,
+                    "Lr_rate": trainer.scheduler.optimizer.param_groups[0]['lr'],
+                }
             )
-
-            losses = trainer.pretrain(epoch, pretrain_dataloader)
-
-            # ## comparing `sp_loss_avg``
-            loss_avg = (losses["aap_loss_avg"] + losses["mip_loss_avg"] + losses["map_loss_avg"] * 0.1) / 3
-            # early_stopping(np.array([-losses["aap_loss_avg"]]), trainer.model)
-            early_stopping(np.array([loss_avg]), trainer.model)
             
-            if args.wandb:
-                wandb.log(
-                    {
-                        "aap_loss_avg": losses["aap_loss_avg"],
-                        "mip_loss_avg": losses["mip_loss_avg"],
-                        "map_loss_avg": losses["map_loss_avg"],
-                        "loss_avg": loss_avg,
-                        "Lr_rate": trainer.scheduler.optimizer.param_groups[0]['lr'],
-                    }
-                )
-                
-            if early_stopping.early_stop:
-                print("Early stopping")
-                break
+        if early_stopping.early_stop:
+            print("Early stopping")
+            break
 
 
 if __name__ == "__main__":

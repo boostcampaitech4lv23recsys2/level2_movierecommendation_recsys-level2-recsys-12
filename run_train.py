@@ -24,7 +24,7 @@ def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--sweep", default="True", type=bool)
-    parser.add_argument("--wandb", default=True, type=bool, help="option for running wandb")
+    parser.add_argument("--wandb", default=1, type=int, help="option for running wandb")
 
     parser.add_argument("--data_dir", default="../data/train/", type=str)
     parser.add_argument("--output_dir", default="output/", type=str)
@@ -80,7 +80,6 @@ def main():
 
     # parser.add_argument("--using_pretrain", action="store_true")
     parser.add_argument("--using_pretrain", default=True)
-    parser.add_argument("--wandb", default="NO_USE", type=str, help="option for running wandb")
     parser.add_argument("--tqdm", default=1, type=int, help="option for running tqdm")
     
     # LR Scheduler
