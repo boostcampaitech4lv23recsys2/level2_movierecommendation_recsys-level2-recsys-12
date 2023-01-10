@@ -24,6 +24,7 @@ def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--sweep", default="True", type=bool)
+    parser.add_argument("--wandb", default=True, type=bool, help="option for running wandb")
 
     parser.add_argument("--data_dir", default="../data/train/", type=str)
     parser.add_argument("--output_dir", default="output/", type=str)
@@ -158,12 +159,12 @@ def main():
         test_dataset, sampler=test_sampler, batch_size=args.batch_size
     )
 
-    # if args.wandb != "NO_USE":
-    import wandb
-    wandb.login()
+    if args.wandb:
+        import wandb
+        wandb.login()
     
-    wandb.init(project="max_seq_len_200_sweep", entity="movie-recsys-12", config=vars(args))
-    # wandb.run.name = f"{args_str}"
+        wandb.init(project="max_seq_len_200_sweep", entity="movie-recsys-12", config=vars(args))
+        # wandb.run.name = f"{args_str}"
     model = S3RecModel(args=args)
 
     trainer = FinetuneTrainer(
@@ -188,16 +189,16 @@ def main():
         trainer.train(epoch)
 
         scores, _ = trainer.valid(epoch)
-        # if args.wandb != "NO_USE":
-        wandb.log(
-            {
-                "RECALL@5": scores[0],
-                "NDCG@5": scores[1],
-                "RECALL@10": scores[2],
-                "NDCG@10": scores[3],
-                "Lr_rate": trainer.scheduler.optimizer.param_groups[0]['lr'],
-            }
-        )
+        if args.wandb:
+            wandb.log(
+                {
+                    "RECALL@5": scores[0],
+                    "NDCG@5": scores[1],
+                    "RECALL@10": scores[2],
+                    "NDCG@10": scores[3],
+                    "Lr_rate": trainer.scheduler.optimizer.param_groups[0]['lr'],
+                }
+            )
         early_stopping(np.array(scores[-1:]), trainer.model)
         if early_stopping.early_stop:
             print("Early stopping")
